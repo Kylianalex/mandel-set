@@ -31,7 +31,7 @@ for iy in range(ny):
         # compute current y value
         x = minx+ix*dx
         # fill current value
-        line.append(suite(x, y, 0.3, 0.5))
+        line.append(suite(0, 0, x, y))
     img.append(line)
 
 plt.imshow(img, cmap = plt.cm.get_cmap('plasma'), interpolation='none',
