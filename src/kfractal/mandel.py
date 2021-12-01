@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
 
-def suite(zr, zi, cr, ci):
-    for n in range(1, 100):
+def suite(zr, zi, cr, ci, itermax=100):
+    for n in range(1, itermax):
         nzr = zr ** 2 - zi ** 2 + cr
         nzi = 2 * zr * zi + ci
         if nzr ** 2 + nzi ** 2 > 4:
@@ -68,18 +68,20 @@ if __name__ == "__main__":
     img = plot_mandelbrot(canvas, nx, ny)
     showimg(img, canvas)
 
+def add_cmdline_args(parser, defaultcanvas):
+    parser.add_argument('--minx', type=float, default=defaultcanvas[0], help="canvas minimum x")
+    parser.add_argument('--maxx', type=float, default=defaultcanvas[1], help="canvas maximum x")
+    parser.add_argument('--miny', type=float, default=defaultcanvas[2], help="canvas minimum y")
+    parser.add_argument('--maxy', type=float, default=defaultcanvas[3], help="canvas maximum y")
+    parser.add_argument('--width', type=int, default=800, help="image width")
+    parser.add_argument('--height', type=int, default=800, help="image height")
+    parser.add_argument('--colormap', default="magma", help="matplotlib colormap")
+    return parser
 
 def cmd_mandel():
     from argparse import ArgumentParser
     parser = ArgumentParser(description='Generate mandelbrot set.')
-    parser.add_argument('--minx', type=float, default=-1.6, help="canvas minimum x")
-    parser.add_argument('--maxx', type=float, default=1.1, help="canvas maximum x")
-    parser.add_argument('--miny', type=float, default=-1.1, help="canvas minimum y")
-    parser.add_argument('--maxy', type=float, default=1.1, help="canvas maximum y")
-    parser.add_argument('--width', type=int, default=800, help="image width")
-    parser.add_argument('--height', type=int, default=800, help="image height")
-    parser.add_argument('--colormap', default="magma", help="matplotlib colormap")
-    
+    parser = add_cmdline_args(parser, (-1.6, 1.1, -1.1, 1.1))
     args = parser.parse_args()
     canvas = (args.minx, args.maxx, args.miny, args.maxy)
     
@@ -90,14 +92,7 @@ def cmd_julia():
     from argparse import ArgumentParser
     parser = ArgumentParser(description='Generate julia set.')
     parser.add_argument('number', metavar='N', type=float, help='julia number generator', nargs='*', default=[0.39, 0.03])
-    parser.add_argument('--minx', type=float, default=-1.3, help="canvas minimum x")
-    parser.add_argument('--maxx', type=float, default=1.3, help="canvas maximum x")
-    parser.add_argument('--miny', type=float, default=-1.3, help="canvas minimum y")
-    parser.add_argument('--maxy', type=float, default=1.3, help="canvas maximum y")
-    parser.add_argument('--width', type=int, default=800, help="image width")
-    parser.add_argument('--height', type=int, default=800, help="image height")
-    parser.add_argument('--colormap', default="magma", help="matplotlib colormap")
-    
+    parser = add_cmdline_args(parser, (-1.3, 1.3, -1.3, 1.3))
     args = parser.parse_args()
     if not len(args.number) == 2:
         raise TypeError(f"julia take 0 or 2 arguments ({len(args.number)} given)")
